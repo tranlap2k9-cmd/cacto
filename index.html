@@ -1,0 +1,958 @@
+g<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Memories</title>
+    <style>
+        .subtitle {
+    /* Sử dụng Arial Black để chữ trông dày và chắc chắn nhất */
+    font-family: 'Arial Black', 'Gadget', sans-serif;
+    font-size: 900px; /* Tăng kích thước để tạo độ bề thế */
+    font-weight: 1000; /* Độ đậm tối đa */
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 5px; /* Giãn cách chữ một chút cho sang trọng */
+    margin-top: 5px;
+    
+    /* Màu hồng tím neon phù hợp với BG */
+    color: #e90979; 
+    
+    /* Đổ bóng nhiều lớp giúp chữ trông nổi khối và chắc chắn trên nền tối */
+    text-shadow: 
+        0 0 10px #ff2d95,
+        0 0 20px #ff2d95,
+        0 0 40px #8a2be2, 
+        0 0 70px #8a2be2;
+
+    /* Hiệu ứng nhấp nháy */
+    animation: neon-blink 1s infinite alternate;
+}
+
+@keyframes neon-blink {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1); /* Kích thước chuẩn */
+        filter: brightness(1.1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(0.98); /* Nhấp nháy kèm co giãn nhẹ tạo cảm giác chắc chắn */
+        filter: brightness(0.8);
+    }
+}
+  
+        .play-btn-compact {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border:  3px solid #ff00ff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+            animation: float 3s ease-in-out infinite;
+        }
+
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .play-btn-compact:hover {
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.9);
+            transform: scale(1.1);
+        }
+
+        .play-btn-compact.playing::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid #ff00ff;
+            animation: pulse 1.5s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+    
+        * {
+            margin: 0;
+            padding:  0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        html, body {
+            width: 100%;
+            height:  100%;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0015 0%, #1a0033 50%, #2d0052 100%);
+            font-family: 'Poppins', sans-serif;
+            min-height: 400vh;
+            overflow-x: hidden;
+            color: #fff;
+            position: relative;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border:  2px solid #ff00ff;
+            border-radius:  50%;
+            pointer-events: none;
+            z-index: 999;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+            box-shadow: 0 0 15px #c00556, inset 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        .cursor.active {
+            width: 50px;
+            height: 50px;
+            border-color: #00ffff;
+            box-shadow: 0 0 25px #00ffff, inset 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff00ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 998;
+            opacity: 0.6;
+            box-shadow: 0 0 10px #ff00ff;
+            animation: trail-fade 1s ease-out forwards;
+        }
+
+        @keyframes trail-fade {
+            to {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* Hiệu ứng hạt sáng */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height:  100%;
+            top: 0;
+            left:  0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff00ff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Chùm sáng di chuyển */
+        .light-beams {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .light-beam {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.4;
+            animation: float-light linear infinite;
+        }
+
+        @keyframes float-light {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(100px, -150px); }
+            50% { transform: translate(-80px, -100px); }
+            75% { transform: translate(120px, 80px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Header ccccccccccccccccccccccccccccc */
+        header {
+            text-align: center;
+            padding: 90px 80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .title {
+            font-size: 4em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow-text 3s ease infinite;
+            text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes glow-text {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(255, 0, 255, 0.8),
+                           0 0 40px rgba(0, 255, 255, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(255, 0, 255, 0.8),
+                           0 0 60px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Music Toggle Button */
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border:  3px solid #ff00ff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6),
+                        inset 0 0 20px rgba(0, 255, 255, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .music-toggle:hover {
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.9),
+                        0 0 60px rgba(0, 255, 255, 0.8),
+                        inset 0 0 30px rgba(0, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        .music-toggle.playing::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid #ff00ff;
+            animation: pulse 1.5s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Gallery Container */
+        .gallery {
+            position: relative;
+            z-index: 5;
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Image Cards Grid */
+        .gallery-grid {
+            position: relative;
+            width: 100%;
+            height:  2800px;
+        }
+
+        /* Image Cards */
+        .image-card {
+            position: absolute;
+            border-radius: 30px;
+            overflow: hidden;
+            cursor: pointer;
+            animation: slideIn 0.6s ease-out backwards;
+            box-shadow: 0 10px 40px rgba(2, 2, 118, 0.2);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: linear-gradient(135deg, #ff00ff, #ff1493);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Vị trí các card */
+        .image-card:nth-child(1) {
+            animation-delay: 0.1s;
+            width: 340px;
+            height: 380px;
+            left: 2%;
+            top: 0px;
+            transform: rotate(-8deg);
+        }
+
+        .image-card:nth-child(2) {
+            animation-delay: 0.2s;
+            width: 300px;
+            height: 320px;
+            left: 32%;
+            top: 80px;
+            transform: rotate(5deg);
+        }
+
+        .image-card:nth-child(3) {
+            animation-delay: 0.3s;
+            width: 360px;
+            height: 340px;
+            left: 62%;
+            top: 0px;
+            transform: rotate(-6deg);
+        }
+
+        .image-card:nth-child(4) {
+            animation-delay: 0.4s;
+            width: 310px;
+            height: 350px;
+            left: 10%;
+            top: 420px;
+            transform: rotate(7deg);
+        }
+
+        .image-card:nth-child(5) {
+            animation-delay: 0.5s;
+            width: 350px;
+            height: 300px;
+            left: 45%;
+            top: 520px;
+            transform: rotate(-5deg);
+        }
+
+        .image-card:nth-child(6) {
+            animation-delay: 0.6s;
+            width: 320px;
+            height: 360px;
+            left: 68%;
+            top: 400px;
+            transform: rotate(6deg);
+        }
+
+        .image-card:nth-child(7) {
+            animation-delay: 0.7s;
+            width: 340px;
+            height: 330px;
+            left: 5%;
+            top: 870px;
+            transform: rotate(-7deg);
+        }
+
+        .image-card:nth-child(8) {
+            animation-delay: 0.8s;
+            width: 370px;
+            height: 340px;
+            left: 38%;
+            top: 1020px;
+            transform: rotate(4deg);
+        }
+
+        .image-card:nth-child(9) {
+            animation-delay: 0.9s;
+            width: 330px;
+            height: 350px;
+            left: 65%;
+            top: 870px;
+            transform: rotate(-6deg);
+        }
+
+        .image-card:nth-child(10) {
+            animation-delay: 1s;
+            width: 350px;
+            height: 320px;
+            left: 7%;
+            top: 1370px;
+            transform: rotate(5deg);
+        }
+
+        .image-card:nth-child(11) {
+            animation-delay: 1.1s;
+            width: 320px;
+            height: 340px;
+            left: 40%;
+            top: 1470px;
+            transform: rotate(-7deg);
+        }
+
+        .image-card:nth-child(12) {
+            animation-delay: 1.2s;
+            width: 360px;
+            height: 350px;
+            left: 73%;
+            top: 1320px;
+            transform: rotate(6deg);
+        }
+
+        .image-card:nth-child(13) {
+            animation-delay: 1.3s;
+            width: 350px;
+            height: 370px;
+            left: 5%;
+            top: 1820px;
+            transform: rotate(-5deg);
+        }
+
+        .image-card:nth-child(14) {
+            animation-delay: 1.4s;
+            width: 350px;
+            height: 340px;
+            left: 35%;
+            top: 1920px;
+            transform: rotate(7deg);
+        }
+
+        .image-card:nth-child(15) {
+            animation-delay: 1.5s;
+            width: 380px;
+            height: 360px;
+            left: 85%;
+            top: 1800px;
+            transform: translateX(-50%) rotate(-4deg);
+        }
+
+        .image-card:nth-child(16) {
+            animation-delay: 1.6s;
+            width: 310px;
+            height: 320px;
+            left: 2%;
+            top: 2200px;
+            transform: rotate(6deg);
+        }    
+        /* CARD 17 */
+        .image-card:nth-child(17) {
+    animation-delay:  1.7s;
+    width: 330px;
+    height: 330px;
+    left: 35%;
+    top: 2300px;
+    transform: rotate(-6deg);
+}
+
+/* CARD 18 */
+.image-card:nth-child(18) {
+    animation-delay: 1.8s;
+    width: 320px;
+    height: 340px;
+    left: 70%;
+    top: 2200px;
+    transform: rotate(-5deg);
+}
+
+/* CARD 19 */
+.image-card:nth-child(19) {
+    animation-delay: 1.9s;
+    width: 700px;
+    height: 300px;
+    left: 5%;
+    top: 2650px;
+    transform: rotate(10deg);
+}
+
+/* CARD 20 */
+.image-card:nth-child(20) {
+    animation-delay: 2s;
+    width: 850px;
+    height: 310px;
+    left: 20%;
+    top: 2900px;
+    transform: rotate(0deg);
+}
+
+/* CARD 21 */
+.image-card:nth-child(21) {
+    animation-delay: 2.1s;
+    width: 330px;
+    height: 360px;
+    left: 72%;
+    top: 2600px;
+    transform: rotate(3deg);
+}    
+        
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform:  translateY(30px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform:  translateY(0) scale(1);
+            }
+        }
+
+        /* Hiệu ứng click */
+        .image-card.clicked {
+            transform: scale(1.12) ! important;
+            z-index: 50;
+            box-shadow: 0 20px 60px rgba(255, 0, 255, 0.5),
+                        0 0 40px rgba(255, 0, 255, 0.4);
+        }
+
+        .image-icon {
+            position: absolute;
+            font-size: 4em;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            opacity: 0;
+            animation: bounce 2s ease-in-out infinite;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .image-card.clicked .image-icon {
+            opacity: 1;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .gallery {
+                padding: 40px 10px;
+            }
+
+            .image-card {
+                width:  250px ! important;
+                height: 280px !important;
+            }
+
+            .title {
+                font-size: 3em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                min-height: 500vh;
+            }
+
+            .gallery {
+                padding: 30px 5px;
+            }
+
+            .gallery-grid {
+                height: 3200px ! important;
+            }
+
+            .image-card {
+                width: 150px !important;
+                height:  180px !important;
+            }
+
+            .title {
+                font-size: 2.2em;
+            }
+
+            .music-toggle {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Hiệu ứng hạt sáng -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Chùm sáng di chuyển -->
+    <div class="light-beams" id="lightBeams"></div>
+
+    <!-- Header -->
+    <header>
+        <h1 class="title">✨ OUR MEMORIES ✨</h1>
+        <p class="subtitle">~ 12A3 ~</p>
+    </header>
+    <!-- Music Player Compact -->
+    <button id="playBtn" class="play-btn-compact">🎵</button>
+
+    <!-- Audio -->
+    <audio id="bgMusic" loop>
+        <source src="tranbonho.mp3" type="audio/mpeg">
+    </audio>
+</body>
+    <!-- Main Gallery -->
+    <div class="gallery">
+        <div class="gallery-grid" id="gallery">
+            <!-- CARD 1 -->
+            <div class="image-card">
+                <img src="photo1.jpg" alt="Ảnh 1">
+                <span class="image-icon">🌸</span>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="image-card">
+                <img src="photo2.jpg" alt="Ảnh 2">
+                <span class="image-icon">💎</span>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="image-card">
+                <img src="photo3.jpg" alt="Ảnh 3">
+                <span class="image-icon">🎨</span>
+            </div>
+
+            <!-- CARD 4 -->
+            <div class="image-card">
+                <img src="photo4.jpg" alt="Ảnh 4">
+                <span class="image-icon">🌈</span>
+            </div>
+            <!-- CARD 5 -->
+            <div class="image-card">
+                <img src="photo5.jpg" alt="Ảnh 5">
+                <span class="image-icon">✨</span>
+            </div>
+
+            <!-- CARD 6 -->
+            <div class="image-card">
+                <img src="photo6.jpg" alt="Ảnh 6">
+                <span class="image-icon">🎆</span>
+            </div>
+
+            <!-- CARD 7 -->
+            <div class="image-card">
+                <img src="photo7.jpg" alt="Ảnh 7">
+                <span class="image-icon">🌟</span>
+            </div>
+
+            <!-- CARD 8 -->
+            <div class="image-card">
+                <img src="photo8.jpg" alt="Ảnh 8">
+                <span class="image-icon">💫</span>
+            </div>
+
+            <!-- CARD 9 -->
+            <div class="image-card">
+                <img src="photo9.jpg" alt="Ảnh 9">
+                <span class="image-icon">🎭</span>
+            </div>
+
+            <!-- CARD 10 -->
+            <div class="image-card">
+                <img src="photo10.jpg" alt="Ảnh 10">
+                <span class="image-icon">🦋</span>
+            </div>
+
+            <!-- CARD 11 -->
+            <div class="image-card">
+                <img src="photo11.jpg" alt="Ảnh 11">
+                <span class="image-icon">🌺</span>
+            </div>
+
+            <!-- CARD 12 -->
+            <div class="image-card">
+                <img src="photo12.jpg" alt="Ảnh 12">
+                <span class="image-icon">🎪</span>
+            </div>
+
+            <!-- CARD 13 -->
+            <div class="image-card">
+                <img src="photo13.jpg" alt="Ảnh 13">
+                <span class="image-icon">🌙</span>
+            </div>
+
+            <!-- CARD 14 -->
+            <div class="image-card">
+                <img src="photo14.jpg" alt="Ảnh 14">
+                <span class="image-icon">⭐</span>
+            </div>
+
+            <!-- CARD 15 -->
+            <div class="image-card">
+                <img src="photo15.jpg" alt="Ảnh 15">
+                <span class="image-icon">🎀</span>
+            </div>
+
+            <!-- CARD 16 -->
+            <div class="image-card">
+                <img src="photo16.jpg" alt="Ảnh 16">
+                <span class="image-icon">🌊</span>
+            </div>
+            <!-- CARD 17 -->
+            <div class="image-card">
+                <img src="photo17.jpg" alt="Ảnh 17">
+                <span class="image-icon">🎁</span>
+</div>
+
+<!-- CARD 18 -->
+            <div class="image-card">
+    <img src="photo18.jpg" alt="Ảnh 18">
+    <span class="image-icon">🎉</span>
+</div>
+
+            <!-- CARD 19 -->
+            <div class="image-card">
+                <img src="photo19.jpg" alt="Ảnh 19">
+                <span class="image-icon">💝</span>
+            </div>
+<!-- CARD 20 -->
+            <div class="image-card">
+    <img src="photo20.jpg" alt="Ảnh 20">
+    <span class="image-icon">🌷</span>
+</div>
+
+<!-- CARD 21 -->
+            <div class="image-card">
+    <img src="photo21.jpg" alt="Ảnh 21">
+    <span class="image-icon">✨</span>
+</div>
+
+           
+
+    <script>
+     
+        // ===== AUTO SCROLL =====
+function autoScroll() {
+    let scrollDirection = 1; // 1 = xuống, -1 = lêngggggggggggggggggggggggggg
+    let scrollSpeed = 1.5; // px/frame
+    let scrollPosition = 0;
+    let maxScroll = document. documentElement.scrollHeight - window.innerHeight;
+
+    setInterval(() => {
+        scrollPosition += scrollSpeed * scrollDirection;
+
+        // Kiểm tra đã đến cuối hay đầu
+        if (scrollPosition >= maxScroll) {
+            scrollDirection = -1; // Quay lại lên
+        } else if (scrollPosition <= 0) {
+            scrollDirection = 1; // Quay lại xuống
+        }
+
+        window.scrollTo(0, scrollPosition);
+    }, 30);
+}
+
+// Bắt đầu auto scroll khi load trang
+window.addEventListener('load', () => {
+    autoScroll();
+});
+        // ===== CUSTOM CURSOR =====
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = mouseX + 'px';
+            trail.style. top = mouseY + 'px';
+            trail.style.background = Math.random() > 0.5 ? '#ff00ff' :  '#00ffff';
+            document.body.appendChild(trail);
+
+            setTimeout(() => trail.remove(), 800);
+        });
+
+        document. addEventListener('mouseover', (e) => {
+            if (e.target.closest('.image-card') || e.target.closest('.music-toggle')) {
+                cursor. classList.add('active');
+            } else {
+                cursor.classList. remove('active');
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.classList.remove('active');
+        });
+
+        // ===== CHÙM SÁNG =====
+        function createLightBeams() {
+            const beamsContainer = document.getElementById('lightBeams');
+            const beamCount = 8;
+            const colors = ['#ff00ff', '#00ffff', '#ff1493', '#9d00ff'];
+
+            for (let i = 0; i < beamCount; i++) {
+                const beam = document.createElement('div');
+                beam.className = 'light-beam';
+
+                const size = Math.random() * 200 + 100;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const duration = Math.random() * 15 + 15;
+                const delay = Math.random() * 10;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                beam.style.width = size + 'px';
+                beam.style.height = size + 'px';
+                beam.style.left = left + '%';
+                beam.style.top = top + '%';
+                beam.style.background = color;
+                beam.style.animationDuration = duration + 's';
+                beam.style.animationDelay = delay + 's';
+
+                beamsContainer.appendChild(beam);
+            }
+        }
+
+        // ===== TẠO PARTICLES =====
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style. top = Math.random() * 100 + '%';
+                particle. style.animationDelay = Math.random() * 3 + 's';
+                particle.style.boxShadow = `0 0 ${Math.random() * 15 + 5}px ${
+                    Math.random() > 0.5 ? '#ff00ff' : '#00ffff'
+                }`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // ===== MUSIC TOGGLE =====
+        const playBtn = document. getElementById('playBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+
+        // Click nút Play/Pause
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                playBtn.classList. remove('playing');
+                isPlaying = false;
+            } else {
+                bgMusic.play();
+                playBtn.classList.add('playing');
+                isPlaying = true;
+            }
+        });
+
+        // ===== CLICK EVENT =====
+        document.querySelectorAll('.image-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (! e.target.closest('img')) return;
+                
+                document.querySelectorAll('.image-card. clicked').forEach(c => {
+                    if (c !== card) {
+                        c.classList.remove('clicked');
+                    }
+                });
+                card.classList.toggle('clicked');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (! e.target.closest('.image-card')) {
+                document.querySelectorAll('.image-card.clicked').forEach(c => {
+                    c.classList. remove('clicked');
+                });
+            }
+        });
+
+        // ===== KHỞI TẠO =====
+        createParticles();
+        createLightBeams();
+
+        // Particles định kỳ
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style. left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDuration = Math.random() * 4 + 2 + 's';
+                particle. style.boxShadow = `0 0 ${Math.random() * 15 + 5}px ${
+                    Math.random() > 0.5 ? '#ff00ff' : '#00ffcc'
+                }`;
+                document.getElementById('particles').appendChild(particle);
+
+                setTimeout(() => particle.remove(), 6000);
+            }
+        }, 1000);
+               
+
+    </script>
+</body>
+</html>
